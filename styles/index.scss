@@ -1,0 +1,42 @@
+$baseFontSize: 12;
+@function px2rem($px) {
+    @return $px / 3 / $baseFontSize + rem;
+}
+#roller {
+    width: 90%;
+    margin: auto;
+    position: relative;
+    background: pink;
+    img {
+        max-width: 100%;
+    }
+    .roller-top {
+        .roulette-box {
+            position: absolute;
+            left: 1%;
+            top:15%;
+            font-size:0;
+            text-align: center;
+            height: 32%;
+            overflow: hidden;
+            .roulette-container{
+                display: inline-block;
+                width: 32%;
+                .roulette{
+                    width: 80%;
+                    margin: auto;
+                }
+            }
+
+        }
+    }
+    .roller-text{
+        padding:px2rem(36);
+        text-align: center;
+        color: #fff;
+        strong{
+            color:#f78c10;
+            padding: 0 4px;
+        }
+    }
+}

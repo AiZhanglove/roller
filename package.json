@@ -1,0 +1,27 @@
+{
+  "name": "activity_base",
+  "version": "1.0.0",
+  "description": "活动项目环境模板",
+  "main": "index.js",
+  "scripts": {
+    "dev": "gulp dev",
+    "build": "gulp build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@git.n.xiaomi.com:sunxiaohui/insurance-activity.git"
+  },
+  "keywords": [
+    "活动模板"
+  ],
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-connect": "^5.0.0",
+    "gulp-html-minify": "^0.0.14",
+    "gulp-sass": "^3.1.0",
+    "gulp-uglify": "^3.0.0",
+    "http-proxy-middleware": "^0.17.4"
+  },
+  "author": "sunxiaohui",
+  "license": "ISC"
+}
