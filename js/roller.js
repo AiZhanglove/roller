@@ -92,6 +92,7 @@ Vue.component('roller',{
                 cfg.rs[i]['speed']=self.rows;
             }
             self.cfg = cfg;
+            console.log(self.cfg)
         },
         //滚动老虎机
         startRoulette:function(){
@@ -116,8 +117,10 @@ Vue.component('roller',{
         }
     },
     created:function(){
-        var self = this;
-        self.getRowsData();
-        self.setCfg();
+        this.getRowsData();
+        
+    },
+    mounted:function(){
+        this.setCfg();
     }
 })
