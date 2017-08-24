@@ -75,7 +75,7 @@ Vue.component('roller',{
             self.startRoulette();
         },
         stopCallback:function(n){
-            alert('stop')
+            // alert('stop')
         },
         //老虎机配置项
         setCfg:function(){
