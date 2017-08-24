@@ -23,23 +23,26 @@ Vue.component('roller',{
     </div>',
     data:function(){
         var data = this.rollerdata;
+
+        data.cfg = {};
+        data.prizeThumb = [];
         var prizelist = this.prizelist;
         var prizeThumb = [];
-        for(var i=0;i<prizelist.length;i++){
+        for(var i=0,j=prizelist.length;i<j;i++){
             var i0=i,
                 i1=i-1,
                 i2=i-2;
-            if(i=0){
-                i1 = prizelist.length-1;
-                i2 = prizelist.length-2;
+            if(i==0){
+                i1 =j-1;
+                i2 =j-2;
             }
-            if(i=1){
-                i2 = prizelist.length-1;
+            if(i==1){
+                i2 =j-1;
             }
             prizeThumb[i] = [i0,i1,i2]
         }
         data.prizeThumb = prizeThumb;
-        data.cfg = {};
+        console.log(data)
         return data;
     },
     methods:{
@@ -66,7 +69,9 @@ Vue.component('roller',{
             for(var i=0;i<rs.length;i++){
                 rs[i]['stopImageNumber'] = self.prizeThumb[index][i];
             }
-            rs[rs.length-1].stopCallback = self.stopCallback
+            rs[rs.length-1].stopCallback = function(index){
+                self.stopCallback(n)
+            }
             self.startRoulette();
         },
         stopCallback:function(n){
@@ -87,7 +92,9 @@ Vue.component('roller',{
                 cfg.rs[i]['speed']=self.rows;
             }
             self.cfg = cfg;
-            console.log(cfg)
+        },
+        setPrizeThumb:function(){
+
         },
         //滚动老虎机
         startRoulette:function(){
@@ -113,7 +120,7 @@ Vue.component('roller',{
     },
     created:function(){
         var self = this;
-        self.getRowsData()
+        self.getRowsData();
         self.setCfg();
     }
 })
