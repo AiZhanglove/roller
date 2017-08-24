@@ -9,34 +9,15 @@
 </head>
 <body>
     <div id="app">
-        <div id="roller">
+        <roller :prizelist="prizelist" :rollerdata="rollerdata"></roller>
+        <!--<div id="roller">
             <div class="roller-top">
                 <img src="https://ts.market.mi-img.com/thumbnail/jpeg/q80w768/Finance/02756479e59529fd2ca8d7d41762a3126e9427267">
-                <div class="roulette-box">
-                    <div class="roulette-container">
+                <div class="roulette-box" >
+                    <div class="roulette-container" v-for="rowdata in rowsData">
                         <div class="roulette">
                             <div class="roulette-inner">
-                                <img data-value="0" data-prize="手机" src="https://ts.market.mi-img.com/thumbnail/png/q80/Finance/02756479e59529fd2ba8d4d41662aa12609427267" style="display: block;">
-                                <img data-value="1" data-prize="插线板	" src="https://ts.market.mi-img.com/thumbnail/png/q80/Finance/0c78ec4dc643e449c10cbece0d68fe47fe298d56e" style="display: block;">
-                                <img data-value="2" data-prize="加息券" src="https://ts.market.mi-img.com/thumbnail/png/q80/Finance/0a756749e99524fd92a8dbd41222a61a6752d6272" style="display: block;">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="roulette-container">
-                        <div class="roulette">
-                            <div class="roulette-inner">
-                                <img data-value="1" data-prize="插线板	" src="https://ts.market.mi-img.com/thumbnail/png/q80/Finance/0c78ec4dc643e449c10cbece0d68fe47fe298d56e" style="display: block;">
-                                <img data-value="2" data-prize="加息券" src="https://ts.market.mi-img.com/thumbnail/png/q80/Finance/0a756749e99524fd92a8dbd41222a61a6752d6272" style="display: block;">
-                                <img data-value="0" data-prize="手机" src="https://ts.market.mi-img.com/thumbnail/png/q80/Finance/02756479e59529fd2ba8d4d41662aa12609427267" style="display: block;">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="roulette-container">
-                        <div class="roulette">
-                            <div class="roulette-inner">
-                                <img data-value="2" data-prize="加息券" src="https://ts.market.mi-img.com/thumbnail/png/q80/Finance/0a756749e99524fd92a8dbd41222a61a6752d6272" style="display: block;">
-                                <img data-value="0" data-prize="手机" src="https://ts.market.mi-img.com/thumbnail/png/q80/Finance/02756479e59529fd2ba8d4d41662aa12609427267" style="display: block;">
-                                <img data-value="1" data-prize="插线板	" src="https://ts.market.mi-img.com/thumbnail/png/q80/Finance/0c78ec4dc643e449c10cbece0d68fe47fe298d56e" style="display: block;">
+                                <img v-for="data in rowdata" :data-value="data.id" :data-prize="data.prizeName" :src="data.imgSrc" style="display: block;">
                             </div>
                         </div>
                     </div>
@@ -48,20 +29,59 @@
             <div class="rollerBtn" id="start">
                 <img src="https://ts.market.mi-img.com/thumbnail/png/q80/Finance/02756479e59525fd25a8d9d41b62aa12669427267" alt="">
             </div>
-        </div>
+        </div>-->
     </div>
     <script src="https://api.jr.mi.com/activity/library/vue.2.3.3.min.js"></script>
+    <script src="js/roller.js"></script>
     <script>
+        const prizelist = [
+            {
+                id:0,
+                prizeName:'手机',
+                imgSrc:'https://ts.market.mi-img.com/thumbnail/png/q80/Finance/02756479e59529fd2ba8d4d41662aa12609427267'
+            },
+            {
+                id:1,
+                prizeName:'插线板',
+                imgSrc:'https://ts.market.mi-img.com/thumbnail/png/q80/Finance/0c78ec4dc643e449c10cbece0d68fe47fe298d56e'
+            },
+            {
+                id:2,
+                prizeName:'加息券',
+                imgSrc:'https://ts.market.mi-img.com/thumbnail/png/q80/Finance/0a756749e99524fd92a8dbd41222a61a6752d6272'
+            },
+
+        ]
         new Vue({
             el:'#app',
             data:{
-                rollerData:{
+                rollerdata:{
                     leftChance:0,
-                    rollerText:''
+                    rollerPreText:'您有',
+                    rollerNextText:'次抽奖机会，抽必中！',
+                    rollerBg:'https://ts.market.mi-img.com/thumbnail/jpeg/q80w768/Finance/02756479e59529fd2ca8d7d41762a3126e9427267',
+                    btnBg:'https://ts.market.mi-img.com/thumbnail/png/q80/Finance/02756479e59525fd25a8d9d41b62aa12669427267',
+                    rows:3,
+                    rowsData:'',
                 }
             },
             methods:{
+                getRowsData:function(){
+                    var self = this;
+                    var rows = self.rollerdata.rows;
+                    var rowsData = [];
+                    for(var i=0;i<rows;i++){
+                        var prizeList = JSON.parse(JSON.stringify(prizelist));
+                        var endPrize = prizeList.splice(0,i);
+                        rowsData[i] = prizeList.concat(endPrize);
+                    }
+                    self.rowsData = rowsData;
+                },
 
+            },
+            created:function(){
+                var self = this;
+                self.getRowsData()
             }
         })
     </script>
