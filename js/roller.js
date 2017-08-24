@@ -2,18 +2,10 @@
  * Created by ZhangAi on 2017/8/24.
  */
 Vue.component('roller',{
-    //props:{
-    //    prizelist:{
-    //        type:Object,
-    //        default:function(){
-    //
-    //        }
-    //    }
-    //},
     props:['prizelist','rollerdata'],
     template:'<div id="roller">\
         <div class="roller-top">\
-            <img src="https://ts.market.mi-img.com/thumbnail/jpeg/q80w768/Finance/02756479e59529fd2ca8d7d41762a3126e9427267">\
+            <img :src="rollerBg">\
             <div class="roulette-box" >\
                 <div class="roulette-container" v-for="rowdata in rowsData">\
                     <div class="roulette">\
@@ -25,13 +17,29 @@ Vue.component('roller',{
             </div>\
         </div>\
         <div class="roller-text">您有<strong class="leftChance">0</strong>次抽奖机会，赶快抽奖吧！</div>\
-        <div class="rollerBtn" id="start">\
-            <img src="https://ts.market.mi-img.com/thumbnail/png/q80/Finance/02756479e59525fd25a8d9d41b62aa12669427267" alt="">\
+        <div class="rollerBtn" id="start" @click="btnClick">\
+            <img :src="btnBg" alt="">\
         </div>\
     </div>',
     data:function(){
         var data = this.rollerdata;
-        console.log(this.rollerdata.leftChance)
+        var prizelist = this.prizelist;
+        var prizeThumb = [];
+        for(var i=0;i<prizelist.length;i++){
+            var i0=i,
+                i1=i-1,
+                i2=i-2;
+            if(i=0){
+                i1 = prizelist.length-1;
+                i2 = prizelist.length-2;
+            }
+            if(i=1){
+                i2 = prizelist.length-1;
+            }
+            prizeThumb[i] = [i0,i1,i2]
+        }
+        data.prizeThumb = prizeThumb;
+        data.cfg = {};
         return data;
     },
     methods:{
@@ -40,16 +48,72 @@ Vue.component('roller',{
             var rows = self.rows;
             var rowsData = [];
             for(var i=0;i<rows;i++){
-                var prizeList = JSON.parse(JSON.stringify(self.props.prizelist));
+                var prizeList = JSON.parse(JSON.stringify(self.prizelist));
                 var endPrize = prizeList.splice(0,i);
                 rowsData[i] = prizeList.concat(endPrize);
             }
             self.rowsData = rowsData;
-            console.log(self.rowsData)
         },
+        btnClick:function(){
+            var self = this;
+            var code =self.prizelist[2].prizeCode;
+            var index = self.getIndex(code);
+            self.start(index)
+        },
+        start:function(index){
+            var self = this;
+            var rs = self.cfg.rs;
+            for(var i=0;i<rs.length;i++){
+                rs[i]['stopImageNumber'] = self.prizeThumb[index][i];
+            }
+            rs[rs.length-1].stopCallback = self.stopCallback
+            self.startRoulette();
+        },
+        stopCallback:function(n){
+            alert('stop')
+        },
+        //老虎机配置项
+        setCfg:function(){
+            var self = this;
+            var cfg = self.cfg;
+            cfg.flag = true;
+            cfg.p = {};
+            cfg.rs=[];
+            cfg.eles=[];
+            for(var i=0;i<self.rows;i++){
+                cfg.eles[i] = $('div.roulette').eq(i);
+                cfg.eles[i].roulette(cfg.p);
+                cfg.rs[i] = {};
+                cfg.rs[i]['speed']=self.rows;
+            }
+            self.cfg = cfg;
+            console.log(cfg)
+        },
+        //滚动老虎机
+        startRoulette:function(){
+            var self = this;
+            var cfg =this.cfg;
+            for(var i=0;i<cfg.eles.length;i++){
+                cfg.eles[i].roulette('option',cfg.rs[i])
+                cfg.eles[i].roulette('start')
+            }
+        },
+
+        getIndex:function(code,list,attr){
+            var self = this;
+            var attr = attr || 'prizeCode';
+            var list = list || self.prizelist;
+            for(var i= 0;i<list.length;i++){
+                if(list[i][attr] == code){
+                    return i;
+                }
+            }
+            return -1;
+        }
     },
     created:function(){
         var self = this;
         self.getRowsData()
+        self.setCfg();
     }
 })
