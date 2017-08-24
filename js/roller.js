@@ -16,7 +16,7 @@ Vue.component('roller',{
                 </div>\
             </div>\
         </div>\
-        <div class="roller-text">您有<strong class="leftChance">0</strong>次抽奖机会，赶快抽奖吧！</div>\
+        <div class="roller-text">{{rollerPreText}}<strong class="leftChance" v-html="leftChance">0</strong>{{rollerNextText}}</div>\
         <div class="rollerBtn" id="start" @click="btnClick">\
             <img :src="btnBg" alt="">\
         </div>\
@@ -70,7 +70,7 @@ Vue.component('roller',{
                 rs[i]['stopImageNumber'] = self.prizeThumb[index][i];
             }
             rs[rs.length-1].stopCallback = function(index){
-                self.stopCallback(n)
+                self.stopCallback(index)
             }
             self.startRoulette();
         },
@@ -92,9 +92,6 @@ Vue.component('roller',{
                 cfg.rs[i]['speed']=self.rows;
             }
             self.cfg = cfg;
-        },
-        setPrizeThumb:function(){
-
         },
         //滚动老虎机
         startRoulette:function(){
