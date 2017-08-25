@@ -3,7 +3,8 @@
  */
 Vue.component('roller',{
     props:['prizelist','rollerdata'],
-    template:'<div id="roller">\
+    template:'\
+    <div id="roller">\
         <div class="roller-top">\
             <img :src="rollerBg">\
             <div class="roulette-box" >\
