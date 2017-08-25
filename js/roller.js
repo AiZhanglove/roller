@@ -23,7 +23,6 @@ Vue.component('roller',{
     </div>',
     data:function(){
         var data = this.rollerdata;
-
         data.cfg = {};
         data.prizeThumb = [];
         var prizelist = this.prizelist;
@@ -42,7 +41,6 @@ Vue.component('roller',{
             prizeThumb[i] = [i0,i1,i2]
         }
         data.prizeThumb = prizeThumb;
-        console.log(data)
         return data;
     },
     methods:{
@@ -59,23 +57,32 @@ Vue.component('roller',{
         },
         btnClick:function(){
             var self = this;
-            var code =self.prizelist[2].prizeCode;
-            var index = self.getIndex(code);
-            self.start(index)
+            if(!self.cfg.flag)return;
+            self.$emit('rollerclick',function(code){
+                var index = self.getIndex(code);
+                self.start(index)
+            })
         },
         start:function(index){
+            //开始游戏
             var self = this;
             var rs = self.cfg.rs;
             for(var i=0;i<rs.length;i++){
                 rs[i]['stopImageNumber'] = self.prizeThumb[index][i];
             }
-            rs[rs.length-1].stopCallback = function(index){
-                self.stopCallback(index)
+            rs[rs.length-1].stopCallback = function(){
+                setTimeout(function(){
+                    self.stopCallback(index)
+                },500)
+
             }
             self.startRoulette();
         },
-        stopCallback:function(n){
-            // alert('stop')
+        //滚动结束后回调
+        stopCallback:function(index){
+             //alert('stop')
+            this.$emit('rollercb',index)
+            this.cfg.flag = true;
         },
         //老虎机配置项
         setCfg:function(){
@@ -92,18 +99,18 @@ Vue.component('roller',{
                 cfg.rs[i]['speed']=self.rows;
             }
             self.cfg = cfg;
-            console.log(self.cfg)
         },
         //滚动老虎机
         startRoulette:function(){
             var self = this;
             var cfg =this.cfg;
+            cfg.flag = false;
             for(var i=0;i<cfg.eles.length;i++){
                 cfg.eles[i].roulette('option',cfg.rs[i])
                 cfg.eles[i].roulette('start')
             }
         },
-
+        //获取奖品位置
         getIndex:function(code,list,attr){
             var self = this;
             var attr = attr || 'prizeCode';
@@ -118,7 +125,6 @@ Vue.component('roller',{
     },
     created:function(){
         this.getRowsData();
-        
     },
     mounted:function(){
         this.setCfg();

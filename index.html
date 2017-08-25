@@ -9,7 +9,7 @@
 </head>
 <body>
     <div id="app">
-        <roller :prizelist="prizelist" :rollerdata="rollerdata"></roller>
+        <roller :prizelist="prizelist" :rollerdata="rollerdata" v-on:rollerclick="rollerclick" @rollercb="rollercb"></roller>
         <!--<div id="roller">
             <div class="roller-top">
                 <img src="https://ts.market.mi-img.com/thumbnail/jpeg/q80w768/Finance/02756479e59529fd2ca8d7d41762a3126e9427267">
@@ -56,7 +56,6 @@
                 prizeCode:'MIFI_INS_PTX12MT_20161208_PRIZE',
             },
 
-
         ]
         new Vue({
             el:'#app',
@@ -72,22 +71,38 @@
                 }
             },
             methods:{
-                getRowsData:function(){
+                luckyDraw:function(cb){
+                    //抽奖请求
                     var self = this;
-                    var rows = self.rollerdata.rows;
-                    var rowsData = [];
-                    for(var i=0;i<rows;i++){
-                        var prizeList = JSON.parse(JSON.stringify(prizelist));
-                        var endPrize = prizeList.splice(0,i);
-                        rowsData[i] = prizeList.concat(endPrize);
+                    var data = {
+                        success:true,
+                        value:{
+                            code: prizelist[2].prizeCode
+                        }
                     }
-                    self.rowsData = rowsData;
+                    if(data.success){
+                        var code = data.value.code;
+                        cb&&cb(code)
+                    }
                 },
+                rollerclick:function(cb){
+                    //cb为调用滚动，其他为滚动前的判断条件
+                    var self = this;
+                    var isLogin = true;
+                    if(isLogin){
+                        self.luckyDraw(cb)
+                    }else{
+                        alert('您还未登录')
+                    }
+                },
+                //滚动完成后的回调
+                rollercb:function(index){
+                    alert(index)
+                }
 
             },
             created:function(){
                 var self = this;
-                self.getRowsData()
             }
         })
     </script>
